@@ -25,3 +25,5 @@ nbdist/
 .nb-gradle/
 *.jar
 src/main/resources/application.yml
+*.class
+out/
