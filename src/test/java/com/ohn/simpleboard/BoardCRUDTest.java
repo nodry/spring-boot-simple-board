@@ -1,7 +1,11 @@
 package com.ohn.simpleboard;
 
 import com.ohn.simpleboard.domain.board.Board;
+import com.ohn.simpleboard.domain.board.BoardPredicate;
 import com.ohn.simpleboard.domain.board.BoardRepository;
+import com.ohn.simpleboard.domain.board.QBoard;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
@@ -14,10 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static com.ohn.simpleboard.domain.board.BoardSpecification.searchContents;
-import static com.ohn.simpleboard.domain.board.BoardSpecification.searchTtile;
 import static org.junit.Assert.*;
-import static org.springframework.data.jpa.domain.Specifications.where;
 
 
 @RunWith(SpringRunner.class)
@@ -28,7 +29,7 @@ public class BoardCRUDTest {
     final String    NAME           = "meditator";
     final String    TITLE          = "test hibernate title";
     final String    UPDATED_TITLE  = "test hibernate Updated title";
-    final String    CONTENTS       = "test JPA contents";
+    final String    CONTENTS       = "test hibernate contents";
     final String    SEARCH         = "hibernate";
     final Long      ID             = 1L;
 
@@ -85,7 +86,7 @@ public class BoardCRUDTest {
 
     @Test
     public void test04_search() {
-        List<Board> boards = boardRepository.findAll(where(searchTtile(SEARCH)).or(searchContents(SEARCH)));
+        List<Board> boards = (List<Board>) boardRepository.findAll(BoardPredicate.search(null, SEARCH));
 
         assertEquals(boards.get(0).getName(), NAME);
         assertEquals(boards.get(0).getTitle(), UPDATED_TITLE);

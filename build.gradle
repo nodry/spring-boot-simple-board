@@ -25,10 +25,44 @@ repositories {
 
 
 dependencies {
+	def querydslVersion = "4.1.4"
+
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-web')
+
+	compile ("com.querydsl:querydsl-core:$querydslVersion")
+	compile ("com.querydsl:querydsl-apt:$querydslVersion")
+	compile ("com.querydsl:querydsl-jpa:$querydslVersion")
+
 	runtime('mysql:mysql-connector-java')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	compileOnly("org.projectlombok:lombok:1.16.10")
+}
+
+def queryDslOutput = file("src/main/generated")
+
+sourceSets {
+	main {
+		java {
+			srcDir queryDslOutput
+		}
+	}
+}
+
+task generateQueryDSL(type: JavaCompile, group: 'build') {
+	source = sourceSets.main.java
+	classpath = configurations.compile
+	destinationDir = queryDslOutput
+	options.compilerArgs = [
+			"-proc:only",
+			"-processor", 'com.querydsl.apt.jpa.JPAAnnotationProcessor,lombok.launch.AnnotationProcessorHider$AnnotationProcessor'
+	]
+}
+
+compileTestJava.dependsOn(generateQueryDSL)
+compileJava.dependsOn(generateQueryDSL)
+
+clean {
+	delete queryDslOutput
 }

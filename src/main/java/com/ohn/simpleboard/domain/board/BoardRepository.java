@@ -1,9 +1,8 @@
 package com.ohn.simpleboard.domain.board;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.querydsl.QueryDslPredicateExecutor;
 
-@Repository
-public interface BoardRepository extends JpaRepository<Board, Long>, JpaSpecificationExecutor {
+public interface BoardRepository extends JpaRepository<Board, Long>, QueryDslPredicateExecutor<Board> {
+
 }
